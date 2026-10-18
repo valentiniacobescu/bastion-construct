@@ -1,0 +1,888 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Bastion Construct</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600&family=Big+Shoulders+Display:wght@700;800&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout concept: plansă de execuție. Hero cu fațadă cotată, secțiuni separate prin linii de desen, o bandă de oțel pentru "Despre". */
+:root {
+  --bg: #ECEAE5;
+  --bg-2: #E0DDD6;
+  --ink: #15181B;
+  --ink-2: #4B5258;
+  --line: #C2BEB5;
+  --accent: #F2A900;
+  --on-accent: #15181B;
+  --steel: #25323E;
+  --on-steel: #ECEAE5;
+  --on-steel-2: #AEB9C2;
+  --steel-line: #3C4D5B;
+  --bad: #B3261E;
+  --font-display: 'Big Shoulders Display', 'Arial Narrow', Impact, sans-serif;
+  --font-body: 'Archivo', 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, Menlo, Consolas, monospace;
+  --header-h: 64px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #14171A;
+    --bg-2: #1C2024;
+    --ink: #ECEAE5;
+    --ink-2: #A2A9AF;
+    --line: #30363C;
+    --accent: #F2A900;
+    --on-accent: #15181B;
+    --steel: #1F2B35;
+    --on-steel: #ECEAE5;
+    --on-steel-2: #A9B4BD;
+    --steel-line: #34444F;
+    --bad: #FF8A80;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #14171A;
+  --bg-2: #1C2024;
+  --ink: #ECEAE5;
+  --ink-2: #A2A9AF;
+  --line: #30363C;
+  --accent: #F2A900;
+  --on-accent: #15181B;
+  --steel: #1F2B35;
+  --on-steel: #ECEAE5;
+  --on-steel-2: #A9B4BD;
+  --steel-line: #34444F;
+  --bad: #FF8A80;
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.6;
+  -webkit-text-size-adjust: 100%;
+}
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0 0 auto;
+  height: env(safe-area-inset-top, 0px);
+  z-index: 10;
+  background: var(--bg);
+}
+h1, h2, h3, h4, p, ul { margin: 0; }
+a { color: inherit; }
+:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+.steel :focus-visible { outline-color: var(--accent); }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}
+
+.wrap {
+  width: 100%;
+  max-width: 1180px;
+  margin-inline: auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+
+/* Drawing classes shared by every illustration */
+.ln { fill: var(--bg); stroke: var(--ink); stroke-width: 1.5; stroke-linejoin: round; }
+.acc { fill: var(--accent); stroke: var(--ink); stroke-width: 1.5; stroke-linejoin: round; }
+.hair { fill: none; stroke: var(--ink-2); stroke-width: 1; }
+.gr { fill: none; stroke: var(--ink); stroke-width: 1.5; stroke-linejoin: round; }
+.g-line { stroke: var(--line); stroke-width: 1; fill: none; }
+.t { font-family: var(--font-mono); font-size: 11px; fill: var(--ink-2); }
+.logo-bg { fill: var(--accent); }
+.logo-fg { fill: var(--on-accent); }
+
+/* Header */
+.site {
+  position: sticky;
+  top: env(safe-area-inset-top, 0px);
+  z-index: 20;
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+}
+.site::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  width: 100%;
+  height: 3px;
+  background: var(--accent);
+  transform: scaleX(var(--p, 0));
+  transform-origin: 0 50%;
+}
+.bar { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: var(--header-h); }
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.55rem;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.brand svg { width: 34px; height: 34px; flex: none; }
+.main ul { display: flex; gap: 2px; list-style: none; padding: 0; }
+.main a {
+  display: block;
+  padding: 8px 12px;
+  font-family: var(--font-mono);
+  font-size: .78rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--ink-2);
+  border-bottom: 2px solid transparent;
+}
+.main a:hover { color: var(--ink); }
+.main a[aria-current="true"] { color: var(--ink); border-bottom-color: var(--accent); }
+.actions { display: flex; align-items: center; gap: 8px; }
+.icon-btn {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid var(--line);
+  cursor: pointer;
+}
+.icon-btn:hover { border-color: var(--ink); }
+.icon-btn svg { width: 20px; height: 20px; }
+.menu-btn { display: none; }
+.menu-btn[aria-expanded="true"] .i-open { display: none; }
+.menu-btn[aria-expanded="false"] .i-close { display: none; }
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 13px 22px;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: .92rem;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border: 2px solid var(--ink);
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+.btn:hover { transform: translate(-2px, -2px); box-shadow: 4px 4px 0 var(--ink); }
+.btn-primary { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
+.btn-primary:hover { box-shadow: 4px 4px 0 var(--ink); }
+.btn-sm { padding: 9px 16px; font-size: .8rem; }
+
+/* Sections */
+.sec { padding-block: clamp(56px, 9vw, 112px); scroll-margin-top: calc(var(--header-h) + env(safe-area-inset-top, 0px)); }
+.hero { padding-block: clamp(32px, 6vw, 72px) clamp(40px, 6vw, 72px); }
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-size: .76rem;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+.eyebrow::before { content: ""; width: 28px; height: 4px; background: var(--accent); flex: none; }
+.display, h1, h2 { font-family: var(--font-display); font-weight: 800; text-transform: uppercase; text-wrap: balance; }
+h1 { font-size: clamp(3.2rem, 9.5vw, 7rem); line-height: .9; margin: 18px 0 22px; }
+h1 em {
+  font-style: normal;
+  background: linear-gradient(var(--accent), var(--accent)) 0 90% / 100% .2em no-repeat;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+h2 { font-size: clamp(2.4rem, 6vw, 4.2rem); line-height: .95; margin-top: 14px; }
+.lead { max-width: 52ch; font-size: 1.125rem; color: var(--ink-2); }
+.cta-row { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+
+.hero-grid { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); gap: clamp(24px, 4vw, 56px); align-items: center; }
+.plate { margin: 0; border: 1px solid var(--ink); background: var(--bg-2); min-width: 0; }
+.plate svg { display: block; width: 100%; height: auto; }
+.plate figcaption {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  padding: 10px 14px;
+  border-top: 1px solid var(--ink);
+  font-family: var(--font-mono);
+  font-size: .72rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+.stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0 28px; margin-top: clamp(32px, 5vw, 56px); }
+.stat { border-top: 2px solid var(--ink); padding-top: 12px; }
+.stat b { display: block; font-family: var(--font-display); font-weight: 800; font-size: clamp(2.2rem, 5vw, 3.4rem); line-height: 1; }
+.stat span { display: block; margin-top: 6px; font-family: var(--font-mono); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); }
+
+.sec-head { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 20px 48px; align-items: end; margin-bottom: clamp(28px, 5vw, 56px); }
+.sec-head p { max-width: 56ch; color: var(--ink-2); font-size: 1.05rem; }
+
+/* Services */
+.svc-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 36px 32px; }
+.svc { border-top: 3px solid var(--ink); padding-top: 18px; transition: border-color .15s ease; }
+.svc:hover { border-top-color: var(--accent); }
+.svc h3 { font-family: var(--font-display); font-weight: 800; font-size: 1.75rem; line-height: 1; text-transform: uppercase; margin-bottom: 10px; }
+.svc p { color: var(--ink-2); }
+.tag { display: inline-block; margin-top: 14px; padding: 3px 8px; border: 1px solid var(--line); font-family: var(--font-mono); font-size: .74rem; }
+
+.sub { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.8rem, 4vw, 2.6rem); text-transform: uppercase; line-height: 1; margin-top: clamp(56px, 8vw, 96px); padding-top: 28px; border-top: 1px solid var(--line); }
+.steps { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 28px; margin-top: 28px; }
+.n { width: 40px; height: 40px; display: grid; place-items: center; background: var(--accent); color: var(--on-accent); font-family: var(--font-display); font-weight: 800; font-size: 1.4rem; }
+.step h4 { font-family: var(--font-display); font-weight: 800; font-size: 1.35rem; text-transform: uppercase; margin: 14px 0 6px; line-height: 1.05; }
+.step p { color: var(--ink-2); font-size: .95rem; }
+
+/* Portfolio */
+.filters { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 28px; }
+.chip {
+  padding: 9px 14px;
+  font-family: var(--font-mono);
+  font-size: .78rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid var(--ink);
+  cursor: pointer;
+}
+.chip:hover { background: var(--bg-2); }
+.chip[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+.count { margin-left: auto; font-family: var(--font-mono); font-size: .78rem; color: var(--ink-2); }
+.proj-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 36px 28px; }
+.proj { display: flex; flex-direction: column; min-width: 0; }
+.art { position: relative; border: 1px solid var(--ink); background: var(--bg-2); transition: transform .15s ease, box-shadow .15s ease; }
+.proj:hover .art { transform: translate(-3px, -3px); box-shadow: 6px 6px 0 var(--accent); }
+.art svg { display: block; width: 100%; height: auto; }
+.cat { position: absolute; top: 10px; left: 10px; padding: 3px 8px; background: var(--ink); color: var(--bg); font-family: var(--font-mono); font-size: .68rem; letter-spacing: .08em; text-transform: uppercase; }
+.proj h3 { font-family: var(--font-display); font-weight: 800; font-size: 1.5rem; line-height: 1.05; text-transform: uppercase; margin: 16px 0 4px; }
+.meta { font-family: var(--font-mono); font-size: .78rem; color: var(--ink-2); }
+.spec { margin-top: 6px; font-size: .95rem; color: var(--ink-2); }
+
+/* About (steel band) */
+.steel { background: var(--steel); color: var(--on-steel); }
+.steel .eyebrow { color: var(--on-steel-2); }
+.about { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(32px, 6vw, 80px); align-items: start; }
+.about-text p { color: var(--on-steel-2); max-width: 56ch; margin-top: 18px; font-size: 1.05rem; }
+.about-text h2 + p { margin-top: 24px; }
+.certs { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 28px; }
+.certs span { padding: 5px 10px; border: 1px solid var(--steel-line); font-family: var(--font-mono); font-size: .76rem; letter-spacing: .06em; }
+.values { list-style: none; padding: 0; }
+.values li { display: grid; grid-template-columns: 36px minmax(0, 1fr); gap: 16px; padding: 22px 0; border-top: 1px solid var(--steel-line); }
+.values li:last-child { border-bottom: 1px solid var(--steel-line); }
+.chk { width: 36px; height: 36px; display: grid; place-items: center; background: var(--accent); }
+.chk svg { width: 18px; height: 18px; }
+.values h3 { font-family: var(--font-display); font-weight: 800; font-size: 1.4rem; text-transform: uppercase; line-height: 1.05; margin-bottom: 4px; }
+.values p { color: var(--on-steel-2); font-size: .96rem; }
+
+/* Contact */
+.contact { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: clamp(32px, 6vw, 72px); align-items: start; }
+.contact-info > p { margin-top: 20px; max-width: 46ch; color: var(--ink-2); font-size: 1.05rem; }
+.info { margin-top: 32px; display: grid; gap: 0; }
+.info-row { display: flex; align-items: center; justify-content: space-between; gap: 12px 16px; flex-wrap: wrap; padding: 16px 0; border-top: 1px solid var(--line); }
+.info-row:last-child { border-bottom: 1px solid var(--line); }
+.info-row dt { flex-basis: 100%; font-family: var(--font-mono); font-size: .72rem; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-2); }
+.info-row dd { margin: 0; font-family: var(--font-display); font-weight: 700; font-size: 1.5rem; line-height: 1.1; min-width: 0; overflow-wrap: anywhere; }
+.info-row dd a { text-decoration: none; }
+.info-row dd a:hover { text-decoration: underline; text-decoration-color: var(--accent); text-decoration-thickness: 3px; text-underline-offset: 4px; }
+.copy { padding: 6px 12px; font-family: var(--font-mono); font-size: .72rem; letter-spacing: .06em; text-transform: uppercase; background: transparent; color: var(--ink); border: 1px solid var(--line); cursor: pointer; }
+.copy:hover { border-color: var(--ink); }
+
+.form-card { border: 1px solid var(--ink); background: var(--bg-2); padding: clamp(20px, 3vw, 32px); min-width: 0; }
+.form-card h3 { font-family: var(--font-display); font-weight: 800; font-size: 1.8rem; text-transform: uppercase; line-height: 1; margin-bottom: 20px; }
+.fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px; }
+.field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.field.full { grid-column: 1 / -1; }
+.field label { font-family: var(--font-mono); font-size: .72rem; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-2); }
+.field input, .field select, .field textarea {
+  width: 100%;
+  padding: 12px 14px;
+  font: inherit;
+  color: var(--ink);
+  background: var(--bg);
+  border: 1px solid var(--ink-2);
+  border-radius: 0;
+}
+.field textarea { min-height: 120px; resize: vertical; }
+.field input[aria-invalid="true"], .field textarea[aria-invalid="true"] { border-color: var(--bad); }
+.err { font-size: .84rem; color: var(--bad); }
+.form-foot { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; margin-top: 22px; }
+.form-foot small { color: var(--ink-2); font-size: .84rem; max-width: 38ch; }
+.ready { margin-top: 24px; padding: 18px; border: 2px dashed var(--ink); background: var(--bg); }
+.ready h4 { font-family: var(--font-display); font-weight: 800; font-size: 1.3rem; text-transform: uppercase; margin-bottom: 6px; }
+.ready p { color: var(--ink-2); font-size: .95rem; }
+.ready pre { margin: 14px 0; padding: 12px; background: var(--bg-2); font-family: var(--font-mono); font-size: .82rem; white-space: pre-wrap; overflow-wrap: anywhere; }
+.ready .row { display: flex; flex-wrap: wrap; gap: 10px; }
+
+/* Footer */
+.foot { background: var(--bg-2); border-top: 1px solid var(--line); padding-block: 28px; }
+.foot .wrap { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 24px; font-family: var(--font-mono); font-size: .76rem; letter-spacing: .06em; color: var(--ink-2); }
+.foot a { text-decoration: none; text-transform: uppercase; }
+.foot a:hover { color: var(--ink); text-decoration: underline; text-decoration-color: var(--accent); text-decoration-thickness: 2px; text-underline-offset: 4px; }
+
+/* Responsive */
+@media (max-width: 980px) {
+  .menu-btn { display: grid; }
+  .main {
+    display: none;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 100%;
+    background: var(--bg);
+    border-bottom: 1px solid var(--line);
+    padding: 8px max(16px, env(safe-area-inset-right, 0px)) 16px max(16px, env(safe-area-inset-left, 0px));
+  }
+  .main.open { display: block; }
+  .main ul { flex-direction: column; }
+  .main a { padding: 14px 0; border-bottom: 1px solid var(--line); font-size: .86rem; }
+  .main a[aria-current="true"] { border-bottom-color: var(--accent); }
+  .hero-grid, .about, .contact, .sec-head { grid-template-columns: minmax(0, 1fr); }
+  .svc-grid, .proj-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 620px) {
+  .actions .btn { display: none; }
+  .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px 20px; }
+  .svc-grid, .proj-grid, .steps { grid-template-columns: minmax(0, 1fr); }
+  .count { margin-left: 0; flex-basis: 100%; }
+  .brand { font-size: 1.35rem; }
+}
+</style>
+
+<header class="site">
+  <div class="wrap bar">
+    <a class="brand" href="#acasa" aria-label="Bastion Construct, la început">
+      <svg viewBox="0 0 34 34" aria-hidden="true" focusable="false">
+        <rect class="logo-bg" width="34" height="34"/>
+        <rect class="logo-fg" x="7" y="7" width="20" height="5"/>
+        <rect class="logo-fg" x="14.5" y="12" width="5" height="10"/>
+        <rect class="logo-fg" x="7" y="22" width="20" height="5"/>
+      </svg>
+      Bastion Construct
+    </a>
+    <nav class="main" id="mainNav" aria-label="Meniu principal">
+      <ul>
+        <li><a href="#acasa">Acasă</a></li>
+        <li><a href="#servicii">Servicii</a></li>
+        <li><a href="#portofoliu">Portofoliu</a></li>
+        <li><a href="#despre">Despre</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+    <div class="actions">
+      <a class="btn btn-primary btn-sm" href="#contact">Cere ofertă</a>
+      <button class="icon-btn" id="themeBtn" type="button" aria-label="Schimbă tema deschisă sau închisă">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 4a8 8 0 0 1 0 16z" fill="currentColor"/></svg>
+      </button>
+      <button class="icon-btn menu-btn" id="menuBtn" type="button" aria-expanded="false" aria-controls="mainNav" aria-label="Deschide meniul">
+        <svg class="i-open" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" fill="none"/></svg>
+        <svg class="i-close" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19" stroke="currentColor" stroke-width="2" fill="none"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="sec hero" id="acasa">
+    <div class="wrap">
+      <div class="hero-grid">
+        <div>
+          <p class="eyebrow">Construcții civile și industriale · Cluj-Napoca</p>
+          <h1>Construim solid. Predăm <em>la termen.</em></h1>
+          <p class="lead">Construim case, blocuri, spații comerciale și hale industriale, de la fundație la predare. Ofertă pe deviz detaliat, echipe proprii și un șef de șantier care răspunde la telefon.</p>
+          <div class="cta-row">
+            <a class="btn btn-primary" href="#contact">Cere o ofertă</a>
+            <a class="btn" href="#portofoliu">Vezi portofoliul</a>
+          </div>
+        </div>
+        <figure class="plate">
+          <svg viewBox="0 0 540 440" role="img" aria-label="Desen tehnic cotat al unei clădiri cu parter și trei etaje, lângă o macara turn">
+            <defs>
+              <pattern id="gridPat" width="20" height="20" patternUnits="userSpaceOnUse"><path class="g-line" d="M20 0H0V20"/></pattern>
+              <pattern id="hatchPat" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><path class="hair" d="M0 0V8"/></pattern>
+            </defs>
+            <rect width="540" height="440" fill="url(#gridPat)"/>
+            <!-- ground -->
+            <rect x="0" y="380" width="540" height="16" fill="url(#hatchPat)"/>
+            <path class="gr" d="M0 380H540"/>
+            <!-- crane -->
+            <path class="gr" d="M62 380V40M74 380V40"/>
+            <path class="hair" d="M62 380L74 350L62 320L74 290L62 260L74 230L62 200L74 170L62 140L74 110L62 80L74 50"/>
+            <path class="gr" d="M30 40H322"/>
+            <path class="gr" d="M74 54H300"/>
+            <path class="hair" d="M74 54L98 40L122 54L146 40L170 54L194 40L218 54L242 40L266 54L290 40"/>
+            <path class="hair" d="M68 12V40M68 12L322 40M68 12L30 40"/>
+            <rect class="acc" x="26" y="40" width="22" height="22"/>
+            <rect class="ln" x="52" y="26" width="26" height="14"/>
+            <path class="hair" d="M251 54V112"/>
+            <rect class="acc" x="238" y="112" width="26" height="22"/>
+            <!-- building -->
+            <rect class="ln" x="120" y="100" width="280" height="280"/>
+            <rect class="acc" x="114" y="92" width="292" height="8"/>
+            <path class="hair" d="M120 310H400M120 240H400M120 170H400"/>
+            <g class="ln">
+              <rect x="144" y="116" width="44" height="34"/><rect x="207" y="116" width="44" height="34"/><rect x="270" y="116" width="44" height="34"/><rect x="333" y="116" width="44" height="34"/>
+              <rect x="144" y="186" width="44" height="34"/><rect x="207" y="186" width="44" height="34"/><rect x="270" y="186" width="44" height="34"/><rect x="333" y="186" width="44" height="34"/>
+              <rect x="144" y="256" width="44" height="34"/><rect x="207" y="256" width="44" height="34"/><rect x="270" y="256" width="44" height="34"/><rect x="333" y="256" width="44" height="34"/>
+              <rect x="144" y="326" width="56" height="34"/><rect x="324" y="326" width="56" height="34"/>
+              <rect x="240" y="322" width="40" height="58"/>
+            </g>
+            <!-- level marks -->
+            <path class="gr" d="M400 380H414M400 310H414M400 240H414M400 170H414M400 100H414"/>
+            <text class="t" x="420" y="384">±0,00</text>
+            <text class="t" x="420" y="314">+3,00</text>
+            <text class="t" x="420" y="244">+6,00</text>
+            <text class="t" x="420" y="174">+9,00</text>
+            <text class="t" x="420" y="104">+12,00</text>
+            <!-- dimensions -->
+            <path class="gr" d="M490 100V380M484 100H496M484 380H496"/>
+            <text class="t" x="506" y="240" text-anchor="middle" transform="rotate(-90 506 240)">12,00 m</text>
+            <path class="gr" d="M120 418H400M120 412V424M400 412V424"/>
+            <text class="t" x="260" y="436" text-anchor="middle">12,00 m</text>
+          </svg>
+          <figcaption><span>Fațadă sud · P+3</span><span>Sc. 1:100</span></figcaption>
+        </figure>
+      </div>
+      <div class="stats">
+        <div class="stat"><b>15+</b><span>ani de experiență</span></div>
+        <div class="stat"><b>240+</b><span>proiecte predate</span></div>
+        <div class="stat"><b>60</b><span>specialiști în echipă</span></div>
+        <div class="stat"><b>5 ani</b><span>garanție pentru lucrări</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="servicii" style="border-top:1px solid var(--line)">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <p class="eyebrow">Servicii</p>
+          <h2>Ce construim</h2>
+        </div>
+        <p>Preluăm lucrarea de la proiect până la recepție sau intrăm doar pe etapa de care ai nevoie: structură, închideri, instalații sau finisaje.</p>
+      </div>
+      <div class="svc-grid">
+        <article class="svc">
+          <h3>Construcții rezidențiale</h3>
+          <p>Case individuale, duplexuri și blocuri de locuințe, predate la roșu, la gri sau la cheie.</p>
+          <span class="tag">Beton armat C25/30</span>
+        </article>
+        <article class="svc">
+          <h3>Clădiri comerciale și birouri</h3>
+          <p>Spații comerciale, sedii de firmă și clădiri de birouri, cu fațade, instalații și compartimentări.</p>
+          <span class="tag">Fațade cortină</span>
+        </article>
+        <article class="svc">
+          <h3>Hale industriale</h3>
+          <p>Structuri metalice, panouri sandwich și pardoseli industriale pentru producție și depozitare.</p>
+          <span class="tag">Deschideri până la 24 m</span>
+        </article>
+        <article class="svc">
+          <h3>Renovări și consolidări</h3>
+          <p>Expertiză tehnică, ranforsări structurale și reabilitări termice pentru clădiri existente.</p>
+          <span class="tag">Expertiză + execuție</span>
+        </article>
+        <article class="svc">
+          <h3>Finisaje și amenajări</h3>
+          <p>Tencuieli, șape, zugrăveli, pardoseli și amenajări interioare executate de echipe proprii.</p>
+          <span class="tag">Predare pe etape</span>
+        </article>
+        <article class="svc">
+          <h3>Proiectare și autorizații</h3>
+          <p>Arhitectură, rezistență și instalații. Ne ocupăm și de dosarul pentru autorizația de construire.</p>
+          <span class="tag">DTAC + PT</span>
+        </article>
+      </div>
+
+      <h3 class="sub">Cum lucrăm</h3>
+      <div class="steps">
+        <div class="step"><div class="n">1</div><h4>Vizită și ofertă</h4><p>Venim la fața locului și îți trimitem o ofertă pe articole de deviz, fără costuri ascunse.</p></div>
+        <div class="step"><div class="n">2</div><h4>Proiect și autorizații</h4><p>Pregătim documentația și obținem avizele, sau lucrăm pe proiectul pe care îl ai deja.</p></div>
+        <div class="step"><div class="n">3</div><h4>Execuție</h4><p>Echipe proprii pe șantier și un raport săptămânal cu poze și stadiul lucrărilor.</p></div>
+        <div class="step"><div class="n">4</div><h4>Recepție și garanție</h4><p>Predăm cu proces-verbal, cartea construcției și garanție scrisă pentru lucrări.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="portofoliu" style="border-top:1px solid var(--line)">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <p class="eyebrow">Portofoliu</p>
+          <h2>Lucrări predate</h2>
+        </div>
+        <p>O selecție din proiectele noastre recente, de la case de familie la hale industriale. Filtrează după tipul de lucrare.</p>
+      </div>
+      <div class="filters" role="group" aria-label="Filtrează proiectele">
+        <button class="chip" type="button" data-filter="all" aria-pressed="true">Toate</button>
+        <button class="chip" type="button" data-filter="Rezidențial" aria-pressed="false">Rezidențial</button>
+        <button class="chip" type="button" data-filter="Comercial" aria-pressed="false">Comercial</button>
+        <button class="chip" type="button" data-filter="Industrial" aria-pressed="false">Industrial</button>
+        <button class="chip" type="button" data-filter="Renovări" aria-pressed="false">Renovări</button>
+        <span class="count" id="projCount" aria-live="polite"></span>
+      </div>
+      <div class="proj-grid" id="projGrid"></div>
+    </div>
+  </section>
+
+  <section class="sec steel" id="despre">
+    <div class="wrap about">
+      <div class="about-text">
+        <p class="eyebrow">Despre noi</p>
+        <h2>Un șantier fără surprize</h2>
+        <p>Firma a pornit ca o echipă de trei meseriași și a crescut lucrare cu lucrare. Azi coordonăm ingineri, șefi de șantier și echipe proprii de structură, zidărie, instalații și finisaje.</p>
+        <p>Folosim materiale de la producători cunoscuți și predăm fiecare etapă cu procese-verbale semnate. Prețul rămâne cel din deviz, iar orice modificare cerută de client se aprobă în scris înainte de execuție.</p>
+        <div class="certs" aria-label="Certificări">
+          <span>ISO 9001</span><span>ISO 14001</span><span>ISO 45001</span>
+        </div>
+      </div>
+      <ul class="values">
+        <li>
+          <span class="chk"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M3 9.5l4 4 8-9" fill="none" stroke="#15181B" stroke-width="2.4"/></svg></span>
+          <div><h3>Echipe proprii</h3><p>Nu subcontractăm structura. Oamenii de pe șantier sunt angajații noștri.</p></div>
+        </li>
+        <li>
+          <span class="chk"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M3 9.5l4 4 8-9" fill="none" stroke="#15181B" stroke-width="2.4"/></svg></span>
+          <div><h3>Preț fix din deviz</h3><p>Fiecare articol este măsurat și prețuit înainte să începem.</p></div>
+        </li>
+        <li>
+          <span class="chk"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M3 9.5l4 4 8-9" fill="none" stroke="#15181B" stroke-width="2.4"/></svg></span>
+          <div><h3>Raport săptămânal</h3><p>Primești poze, stadiul lucrărilor și ce urmează în săptămâna următoare.</p></div>
+        </li>
+        <li>
+          <span class="chk"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M3 9.5l4 4 8-9" fill="none" stroke="#15181B" stroke-width="2.4"/></svg></span>
+          <div><h3>Garanție scrisă</h3><p>Rămânem răspunzători pentru lucrare și după recepție.</p></div>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="sec" id="contact">
+    <div class="wrap contact">
+      <div class="contact-info">
+        <p class="eyebrow">Contact</p>
+        <h2>Spune-ne ce vrei să construiești</h2>
+        <p>Primești un răspuns în aceeași zi lucrătoare, iar dacă e nevoie venim la fața locului pentru o evaluare gratuită.</p>
+        <dl class="info">
+          <div class="info-row">
+            <dt>Telefon</dt>
+            <dd><a id="phoneVal" href="tel:+40264000000">+40 264 000 000</a></dd>
+            <button class="copy" type="button" data-copy="#phoneVal">Copiază</button>
+          </div>
+          <div class="info-row">
+            <dt>Email</dt>
+            <dd><a id="mailVal" href="mailto:contact@bastionconstruct.ro">contact@bastionconstruct.ro</a></dd>
+            <button class="copy" type="button" data-copy="#mailVal">Copiază</button>
+          </div>
+          <div class="info-row">
+            <dt>Sediu</dt>
+            <dd>Str. Fabricii 12, Cluj-Napoca</dd>
+          </div>
+          <div class="info-row">
+            <dt>Program</dt>
+            <dd>Luni – Vineri, 08:00 – 17:00</dd>
+          </div>
+        </dl>
+      </div>
+
+      <div class="form-card">
+        <h3>Cere o ofertă</h3>
+        <form id="contactForm" novalidate>
+          <div class="fields">
+            <div class="field">
+              <label for="name">Nume</label>
+              <input id="name" name="name" type="text" autocomplete="name" aria-describedby="name-err" placeholder="Ion Popescu">
+              <span class="err" id="name-err" hidden>Scrie numele tău.</span>
+            </div>
+            <div class="field">
+              <label for="reach">Telefon sau email</label>
+              <input id="reach" name="reach" type="text" autocomplete="off" aria-describedby="reach-err" placeholder="07xx xxx xxx">
+              <span class="err" id="reach-err" hidden>Scrie un telefon sau un email la care te putem contacta.</span>
+            </div>
+            <div class="field full">
+              <label for="type">Tip lucrare</label>
+              <select id="type" name="type">
+                <option>Casă nouă</option>
+                <option>Bloc sau ansamblu rezidențial</option>
+                <option>Spațiu comercial sau birouri</option>
+                <option>Hală industrială</option>
+                <option>Renovare sau consolidare</option>
+                <option>Altceva</option>
+              </select>
+            </div>
+            <div class="field full">
+              <label for="msg">Detalii</label>
+              <textarea id="msg" name="msg" aria-describedby="msg-err" placeholder="Locație, suprafață aproximativă, termen dorit"></textarea>
+              <span class="err" id="msg-err" hidden>Spune-ne pe scurt ce lucrare ai în plan.</span>
+            </div>
+          </div>
+          <div class="form-foot">
+            <button class="btn btn-primary" type="submit">Pregătește mesajul</button>
+            <small>Mesajul apare mai jos, gata de copiat și trimis pe email.</small>
+          </div>
+        </form>
+        <div class="ready" id="ready" hidden>
+          <h4>Mesaj pregătit</h4>
+          <p>Copiază textul și trimite-l la <strong>contact@bastionconstruct.ro</strong>, sau sună la <strong>+40 264 000 000</strong>.</p>
+          <pre id="readyText"></pre>
+          <div class="row">
+            <button class="btn btn-sm btn-primary" type="button" data-copy="#readyText">Copiază mesajul</button>
+            <button class="btn btn-sm" type="button" id="editBtn">Modifică</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <span>© 2026 Bastion Construct · Cluj-Napoca</span>
+    <a href="#acasa">Înapoi sus</a>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var $ = function (s, c) { return (c || document).querySelector(s); };
+  var $$ = function (s, c) { return Array.prototype.slice.call((c || document).querySelectorAll(s)); };
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var root = document.documentElement;
+
+  /* Theme */
+  function isDark() {
+    var t = root.getAttribute('data-theme');
+    if (t) return t === 'dark';
+    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+  }
+  try { var saved = localStorage.getItem('bc-theme'); if (saved) root.setAttribute('data-theme', saved); } catch (e) {}
+  $('#themeBtn').addEventListener('click', function () {
+    var next = isDark() ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    try { localStorage.setItem('bc-theme', next); } catch (e) {}
+  });
+
+  /* Mobile menu */
+  var menuBtn = $('#menuBtn'), nav = $('#mainNav');
+  function setMenu(open) {
+    nav.classList.toggle('open', open);
+    menuBtn.setAttribute('aria-expanded', String(open));
+    menuBtn.setAttribute('aria-label', open ? 'Închide meniul' : 'Deschide meniul');
+  }
+  menuBtn.addEventListener('click', function () { setMenu(!nav.classList.contains('open')); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') setMenu(false); });
+
+  /* Smooth scroll to sections */
+  $$('a[href^="#"]').forEach(function (a) {
+    a.addEventListener('click', function (e) {
+      var id = a.getAttribute('href');
+      if (id.length < 2) return;
+      var target = $(id);
+      if (!target) return;
+      e.preventDefault();
+      setMenu(false);
+      target.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+    });
+  });
+
+  /* Active link while scrolling */
+  var links = {};
+  $$('#mainNav a').forEach(function (a) { links[a.getAttribute('href').slice(1)] = a; });
+  var spy = new IntersectionObserver(function (entries) {
+    entries.forEach(function (en) {
+      if (!en.isIntersecting) return;
+      Object.keys(links).forEach(function (k) { links[k].removeAttribute('aria-current'); });
+      var l = links[en.target.id];
+      if (l) l.setAttribute('aria-current', 'true');
+    });
+  }, { rootMargin: '-40% 0px -55% 0px' });
+  $$('main section[id]').forEach(function (s) { spy.observe(s); });
+
+  /* Scroll progress under the header */
+  var ticking = false;
+  function onScroll() {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(function () {
+      var h = document.documentElement;
+      var y = window.scrollY || h.scrollTop || 0;
+      var max = h.scrollHeight - h.clientHeight;
+      root.style.setProperty('--p', max > 0 ? Math.min(1, y / max).toFixed(4) : '0');
+      ticking = false;
+    });
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  /* Portfolio drawings */
+  var ground = '<path class="gr" d="M20 220H380"/><path class="hair" d="M20 232H380" stroke-dasharray="4 6"/>';
+  function wrap(inner) { return '<svg viewBox="0 0 400 260" aria-hidden="true" focusable="false">' + inner + ground + '</svg>'; }
+  var ART = {
+    house: function () {
+      return wrap(
+        '<rect class="ln" x="250" y="70" width="18" height="44"/>' +
+        '<rect class="ln" x="90" y="130" width="220" height="90"/>' +
+        '<polygon class="acc" points="76,132 200,56 324,132"/>' +
+        '<rect class="ln" x="186" y="164" width="28" height="56"/>' +
+        '<rect class="ln" x="112" y="150" width="46" height="34"/><path class="hair" d="M135 150v34M112 167h46"/>' +
+        '<rect class="ln" x="242" y="150" width="46" height="34"/><path class="hair" d="M265 150v34M242 167h46"/>'
+      );
+    },
+    block: function () {
+      var w = '';
+      for (var r = 0; r < 4; r++) for (var c = 0; c < 4; c++) {
+        w += '<rect class="ln" x="' + (122 + c * 42) + '" y="' + (52 + r * 34) + '" width="28" height="20"/>';
+      }
+      return wrap(
+        '<rect class="ln" x="110" y="42" width="180" height="178"/>' + w +
+        '<rect class="acc" x="104" y="32" width="192" height="10"/>' +
+        '<rect class="ln" x="186" y="184" width="28" height="36"/>' +
+        '<rect class="acc" x="176" y="176" width="48" height="6"/>'
+      );
+    },
+    hall: function () {
+      var d = '';
+      [72, 162, 252].forEach(function (x) {
+        d += '<rect class="ln" x="' + x + '" y="158" width="60" height="62"/>';
+        for (var y = 170; y < 220; y += 12) d += '<path class="hair" d="M' + x + ' ' + y + 'h60"/>';
+      });
+      return wrap(
+        '<rect class="ln" x="50" y="120" width="300" height="100"/>' +
+        '<polygon class="acc" points="50,120 50,92 110,120 110,92 170,120 170,92 230,120 230,92 290,120 290,92 350,120"/>' +
+        d
+      );
+    },
+    office: function () {
+      var g = '';
+      for (var x = 96; x < 330; x += 26) g += '<path class="hair" d="M' + x + ' 70V220"/>';
+      for (var y = 95; y < 190; y += 25) g += '<path class="hair" d="M70 ' + y + 'H330"/>';
+      return wrap(
+        '<rect class="ln" x="70" y="70" width="260" height="150"/>' + g +
+        '<rect class="acc" x="70" y="58" width="260" height="12"/>' +
+        '<rect class="acc" x="170" y="190" width="60" height="30"/>'
+      );
+    },
+    shop: function () {
+      return wrap(
+        '<rect class="ln" x="40" y="130" width="320" height="90"/>' +
+        '<rect class="acc" x="40" y="108" width="320" height="22"/>' +
+        '<rect class="ln" x="56" y="150" width="96" height="60"/><path class="hair" d="M104 150v60"/>' +
+        '<rect class="ln" x="248" y="150" width="96" height="60"/><path class="hair" d="M296 150v60"/>' +
+        '<rect class="ln" x="176" y="156" width="48" height="64"/><path class="hair" d="M200 156v64"/>'
+      );
+    },
+    reno: function () {
+      var w = '', p = '', i;
+      for (var r = 0; r < 4; r++) for (var c = 0; c < 3; c++) {
+        w += '<rect class="ln" x="' + (122 + c * 60) + '" y="' + (76 + r * 34) + '" width="34" height="20"/>';
+      }
+      for (i = 0; i < 6; i++) p += '<path class="gr" d="M' + (84 + i * 46.4) + ' 52V220"/>';
+      return wrap(
+        '<rect class="ln" x="100" y="60" width="200" height="160"/>' + w + p +
+        '<rect class="acc" x="84" y="108" width="232" height="6"/>' +
+        '<rect class="acc" x="84" y="148" width="232" height="6"/>' +
+        '<rect class="acc" x="84" y="188" width="232" height="6"/>' +
+        '<path class="hair" d="M84 114L130.4 148M130.4 114L176.8 148M223.2 148L269.6 114"/>'
+      );
+    }
+  };
+  var projects = [
+    { art: 'house',  cat: 'Rezidențial', title: 'Vilă P+1',                 place: 'Florești, Cluj',   year: 2025, spec: '186 mp construiți, acoperiș în două ape, predată la cheie.' },
+    { art: 'block',  cat: 'Rezidențial', title: 'Bloc de locuințe P+4',     place: 'Timișoara',        year: 2024, spec: '32 de apartamente, structură din beton armat, 2.800 mp desfășurați.' },
+    { art: 'hall',   cat: 'Industrial',  title: 'Hală de producție',        place: 'Oradea',           year: 2025, spec: '3.200 mp, structură metalică cu deschidere de 24 m.' },
+    { art: 'office', cat: 'Comercial',   title: 'Sediu de birouri',         place: 'Brașov',           year: 2023, spec: '1.450 mp, fațadă cortină și parter comercial.' },
+    { art: 'shop',   cat: 'Comercial',   title: 'Spațiu comercial',         place: 'Sibiu',            year: 2024, spec: '620 mp, vitrine mari și amenajare interioară completă.' },
+    { art: 'reno',   cat: 'Renovări',    title: 'Reabilitare bloc P+4',     place: 'Iași',             year: 2025, spec: '2.100 mp de fațadă, termosistem și consolidare locală.' }
+  ];
+  var grid = $('#projGrid');
+  grid.innerHTML = projects.map(function (p) {
+    return '<article class="proj" data-cat="' + p.cat + '"><div class="art"><span class="cat">' + p.cat + '</span>' + ART[p.art]() +
+      '</div><h3>' + p.title + '</h3><p class="meta">' + p.place + ' · ' + p.year + '</p><p class="spec">' + p.spec + '</p></article>';
+  }).join('');
+
+  var chips = $$('.chip'), cards = $$('.proj', grid), count = $('#projCount');
+  function applyFilter(f) {
+    var n = 0;
+    cards.forEach(function (c) {
+      var show = f === 'all' || c.getAttribute('data-cat') === f;
+      c.hidden = !show;
+      if (show) n++;
+    });
+    chips.forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-filter') === f)); });
+    count.textContent = n + (n === 1 ? ' proiect' : ' proiecte');
+  }
+  chips.forEach(function (b) { b.addEventListener('click', function () { applyFilter(b.getAttribute('data-filter')); }); });
+  applyFilter('all');
+
+  /* Copy buttons */
+  $$('[data-copy]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var el = $(b.getAttribute('data-copy'));
+      var text = el.textContent.trim();
+      var orig = b.textContent;
+      function done(msg) { b.textContent = msg; setTimeout(function () { b.textContent = orig; }, 1600); }
+      function fallback() {
+        var r = document.createRange();
+        r.selectNodeContents(el);
+        var s = window.getSelection();
+        s.removeAllRanges();
+        s.addRange(r);
+        done('Selectat');
+      }
+      try {
+        navigator.clipboard.writeText(text).then(function () { done('Copiat'); }, fallback);
+      } catch (e) { fallback(); }
+    });
+  });
+
+  /* Contact form: validates and prepares the message on the page */
+  var form = $('#contactForm'), ready = $('#ready');
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var firstBad = null;
+    ['name', 'reach', 'msg'].forEach(function (id) {
+      var f = $('#' + id), err = $('#' + id + '-err');
+      var bad = !f.value.trim();
+      err.hidden = !bad;
+      f.setAttribute('aria-invalid', String(bad));
+      if (bad && !firstBad) firstBad = f;
+    });
+    if (firstBad) { firstBad.focus(); return; }
+    var txt = [
+      'Nume: ' + $('#name').value.trim(),
+      'Telefon sau email: ' + $('#reach').value.trim(),
+      'Tip lucrare: ' + $('#type').value,
+      '',
+      $('#msg').value.trim()
+    ].join('\n');
+    $('#readyText').textContent = txt;
+    ready.hidden = false;
+    ready.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'nearest' });
+  });
+  $('#editBtn').addEventListener('click', function () { ready.hidden = true; $('#name').focus(); });
+})();
+</script>
+
+</body></html>
